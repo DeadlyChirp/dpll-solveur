@@ -109,7 +109,7 @@ let pur clauses =
         else 
           (* si -hd est pas la, hd est donc pur *)
           hd
-  in
+  in 
   (* on reutilise trouver_litteral_pur avec une list dj triee
      sans doublons
      cette ligne est pour but de trier et supprimer les doublons 

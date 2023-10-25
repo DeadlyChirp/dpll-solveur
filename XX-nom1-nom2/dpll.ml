@@ -58,9 +58,12 @@ let simplifie l clauses =
       Some ( List.filter ( fun litteral -> litteral <> -l) clause)  
     ) clauses
     (*On verifie ici si "l" est dans la clause
-      Si "l" est dans la clause, donc la clause est satisfaite vu 
-      qu'on suppose que "l" est vraie. On renvoie donc false pour l'eliminer
-      de la liste des clauses.    
+      Retirer les Clauses Satisfaites : 
+      Si l est présent dans une clause, cette clause est déjà satisfaite et est retirée de la liste.
+      Retirer les Littéraux Faux : 
+      Si -l (l'opposé de l) est présent dans une clause, il est retiré car il est faux.   
+
+      Puis on utilise Some pour rajouter les clauses apres avoir filtree dans la nouvelle liste "clauses"
     *)
 
 (* solveur_split : int list list -> int list -> int list option

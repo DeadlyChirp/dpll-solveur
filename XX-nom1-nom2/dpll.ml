@@ -64,7 +64,7 @@ let simplifie l clauses =
       Si -l (l'opposé de l) est présent dans une clause, il est retiré car il est faux.   
 
       Puis on utilise Some pour rajouter les clauses apres avoir filtree dans la nouvelle liste "clauses"
-    *)
+    *) 
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -94,14 +94,35 @@ let rec solveur_split clauses interpretation =
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
 let pur clauses =
-  (* à compléter *)
-  0
+    let tous_litteraux = 
+      (* aplatie la liste des clauses en une seule liste
+         [[1,2,3][2,3]]->[1,2,3,2,3] *)
+      List.flatten clauses in
+  let rec trouver_litteral_pur litteraux =
+    match litteraux with
+    | [] -> raise (Failure "pas de littéral pur")
+    | hd :: tl -> 
+      (* on check si -hd est present dans la liste 
+         Si -hd est present on check le reste de la liste *)
+        if List.mem (-hd) tous_les_litteraux then 
+          trouver_litteral_pur tl 
+        else 
+          (* si -hd est pas la, hd est donc pur *)
+          hd
+  in
+  (* on reutilise trouver_litteral_pur avec une list dj triee
+     sans doublons
+     cette ligne est pour but de trier et supprimer les doublons 
+     car un pur pourrait apparaitre plusieures fois dans la liste
+     en supprimant les doublons, on reduit la taille
+     et accelerer le processus *)
+  trouver_litteral_pur (List.sort_uniq compare tous_les_litteraux)
 
 (* unitaire : int list list -> int
     - si `clauses' contient au moins une clause unitaire, retourne
       le littéral de cette clause unitaire ;
     - sinon, lève une exception `Not_found' *)
-let unitaire clauses =
+let rec unitaire clauses =
   match clauses with
     | [] -> raise Not_found (*lève une exception Not_found*)
     | [x] :: tl -> x (*on renvoie le littéral si clause unitaire*)

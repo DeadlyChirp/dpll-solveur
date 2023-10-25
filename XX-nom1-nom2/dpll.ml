@@ -51,8 +51,17 @@ let coloriage = [
    applique la simplification de l'ensemble des clauses en mettant
    le littéral l à vrai *)
 let simplifie l clauses =
-  (* à compléter *)
-  []
+  filter_map ( fun clause -> 
+    if List.mem l clause then
+      None 
+    else
+      Some ( List.filter ( fun litteral -> litteral <> -l) clause)  
+    ) clauses
+    (*On verifie ici si "l" est dans la clause
+      Si "l" est dans la clause, donc la clause est satisfaite vu 
+      qu'on suppose que "l" est vraie. On renvoie donc false pour l'eliminer
+      de la liste des clauses.    
+    *)
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -107,3 +116,5 @@ let rec solveur_dpll_rec clauses interpretation =
 let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
   print_modele (solveur_dpll_rec clauses [])
+
+    

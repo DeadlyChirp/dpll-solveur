@@ -93,7 +93,7 @@ let rec solveur_split clauses interpretation =
     - si `clauses' contient au moins un littéral pur, retourne
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
-let pur clauses =
+(* let pur clauses =
     let tous_litteraux = 
       (* aplatie la liste des clauses en une seule liste
          [[1,2,3][2,3]]->[1,2,3,2,3] *)
@@ -104,7 +104,7 @@ let pur clauses =
     | hd :: tl -> 
       (* on check si -hd est present dans la liste 
          Si -hd est present on check le reste de la liste *)
-        if List.mem (-hd) tous_les_litteraux then 
+        if List.mem (-hd) tous_litteraux then 
           trouver_litteral_pur tl 
         else 
           (* si -hd est pas la, hd est donc pur *)
@@ -116,7 +116,37 @@ let pur clauses =
      car un pur pourrait apparaitre plusieures fois dans la liste
      en supprimant les doublons, on reduit la taille
      et accelerer le processus *)
-  trouver_litteral_pur (List.sort_uniq compare tous_les_litteraux)
+  trouver_litteral_pur (List.sort_uniq compare tous_litteraux) *)
+  let pur clauses =
+    let tous_litteraux = List.flatten clauses in
+    let litteraux_uniques = List.sort_uniq compare (List.sort compare tous_litteraux) in
+    let rec trouver_litteral_pur litteraux =
+        match litteraux with
+        | [] -> raise (Failure "pas de littéral pur")
+        | hd :: tl ->
+            if List.mem (-hd) litteraux then
+                trouver_litteral_pur tl
+            else
+                hd
+    in
+    trouver_litteral_pur litteraux_uniques
+    let pur clauses =
+      let tous_litteraux = List.flatten clauses in
+      let litteraux_uniques = List.sort_uniq compare (List.sort compare tous_litteraux) in
+      let rec trouver_litteral_pur litteraux =
+          match litteraux with
+          | [] -> raise (Failure "pas de littéral pur")
+          | hd :: tl ->
+              if List.mem (-hd) litteraux then
+                  trouver_litteral_pur tl
+              else
+                  hd
+      in
+      trouver_litteral_pur litteraux_uniques
+  
+
+
+
 
 (* unitaire : int list list -> int
     - si `clauses' contient au moins une clause unitaire, retourne
@@ -127,8 +157,11 @@ let rec unitaire clauses =
     | [] -> raise Not_found (*lève une exception Not_found*)
     | [x] :: tl -> x (*on renvoie le littéral si clause unitaire*)
     | hd :: tl -> unitaire tl (*on passe à la clause suivante*)
-
-(* solveur_dpll_rec : int list list -> int list -> int list option *)
+ 
+(* solveur_dpll_rec : int list list -> int list -> int list option 
+   
+ + but est de déterminer s'il existe une affectation des variables 
+   booléennes qui rend toutes les clauses vraies.*)
 let rec solveur_dpll_rec clauses interpretation =
   (* à compléter *)
   None

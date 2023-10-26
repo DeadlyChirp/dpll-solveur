@@ -127,8 +127,11 @@ let rec unitaire clauses =
     | [] -> raise Not_found (*lève une exception Not_found*)
     | [x] :: tl -> x (*on renvoie le littéral si clause unitaire*)
     | hd :: tl -> unitaire tl (*on passe à la clause suivante*)
-
-(* solveur_dpll_rec : int list list -> int list -> int list option *)
+ 
+(* solveur_dpll_rec : int list list -> int list -> int list option 
+   
+ + but est de déterminer s'il existe une affectation des variables 
+   booléennes qui rend toutes les clauses vraies.*)
 let rec solveur_dpll_rec clauses interpretation =
   (* à compléter *)
   None

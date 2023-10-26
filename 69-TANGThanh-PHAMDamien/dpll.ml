@@ -104,7 +104,7 @@ let pur clauses =
     | hd :: tl -> 
       (* on check si -hd est present dans la liste 
          Si -hd est present on check le reste de la liste *)
-        if List.mem (-hd) tous_les_litteraux then 
+        if List.mem (-hd) tous_litteraux then 
           trouver_litteral_pur tl 
         else 
           (* si -hd est pas la, hd est donc pur *)
@@ -116,7 +116,7 @@ let pur clauses =
      car un pur pourrait apparaitre plusieures fois dans la liste
      en supprimant les doublons, on reduit la taille
      et accelerer le processus *)
-  trouver_litteral_pur (List.sort_uniq compare tous_les_litteraux)
+  trouver_litteral_pur (List.sort_uniq compare tous_litteraux)
 
 (* unitaire : int list list -> int
     - si `clauses' contient au moins une clause unitaire, retourne

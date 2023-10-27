@@ -2,6 +2,8 @@
 
 open List
 
+
+
 (* fonctions utilitaires *)
 (* ----------------------------------------------------------- *)
 (* filter_map : ('a -> 'b option) -> 'a list -> 'b list
@@ -93,19 +95,19 @@ let rec solveur_split clauses interpretation =
     - si `clauses' contient au moins un littéral pur, retourne
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
-  let pur clauses =
-    let tous_litteraux = List.flatten clauses in
-    let litteraux_uniques = List.sort_uniq (fun x y -> x - y) tous_litteraux in
-    let rec trouver_litteral_pur litteraux =
-      match litteraux with
-      | [] -> raise (Failure "pas de littéral pur")
-      | hd :: tl ->
-        if List.mem (-hd) tous_litteraux then
-          trouver_litteral_pur tl
-        else
-          hd
-    in
-    trouver_litteral_pur litteraux_uniques
+    let pur clauses =
+      let tous_litteraux = List.flatten clauses in
+      let litteraux_uniques = List.sort_uniq (fun x y -> x - y) tous_litteraux in
+      let rec trouver_litteral_pur litteraux =
+          match litteraux with
+          | [] -> raise (Failure "pas de littéral pur")
+          | hd :: tl ->
+              if List.mem (-hd) litteraux then
+                  trouver_litteral_pur tl
+              else
+                  hd
+      in
+      trouver_litteral_pur litteraux_uniques
 
 (* unitaire : int list list -> int
     - si `clauses' contient au moins une clause unitaire, retourne
@@ -121,15 +123,32 @@ let rec unitaire clauses =
    
  + but est de déterminer s'il existe une affectation des variables 
    booléennes qui rend toutes les clauses vraies.*)
-let rec solveur_dpll_rec clauses interpretation =
-  (* à compléter *)
-  None
+
+   exception PasDeLitteralPur
+
+   let rec solveur_dpll_rec clauses interpretation =
+    if clauses = [] then Some interpretation else
+    if mem [] clauses then None else
+      try 
+      let unit_clause = unitaire clauses in solveur_dpll_rec (simplifie unit_clause clauses) (unit_clause::interpretation)
+    with Not_found ->
+      try 
+        let pure_literal = pur clauses in solveur_dpll_rec (simplifie pure_literal clauses) (pure_literal::interpretation) with
+      Failure _->
+          let l = hd (hd clauses) in
+          let branche = solveur_dpll_rec (simplifie l clauses) (l::interpretation) in
+          match branche with
+          | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
+          | _    -> branche
+   
+  
+  
 
 
 (* tests *)
 (* ----------------------------------------------------------- *)
-(* let () = print_modele (solveur_dpll_rec systeme []) *)
-(* let () = print_modele (solveur_dpll_rec coloriage []) *)
+let () = print_modele (solveur_dpll_rec systeme []) 
+(* let () = print_modele (solveur_dpll_rec coloriage [])*)
 
 let () =
   let clauses = Dimacs.parse Sys.argv.(1) in

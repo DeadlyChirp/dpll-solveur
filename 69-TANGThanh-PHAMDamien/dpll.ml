@@ -174,4 +174,18 @@ let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
   print_modele (solveur_dpll_rec clauses []) 
 
+  (* pour tester le dpll sur les fichiers, faire ./dpll nom_du_fichier.cnf 
+  
+     résultats attendu sur sudoku-4x4.cnf : SAT 
+     résultats obtenu sur sudoku-4x4.cnf : SAT 
+     
+     résultats attendu sur sudoku-9x9-god.cnf : SAT 
+     résultats obtenu sur sudoku-9x9-god.cnf : UNSAT 
+     
+     résultats attendu sur grammaire.cnf : UNSAT 
+     résultats obtenu sur grammaire.cnf : UNSAT 
+     
+     résultats attendu sur dependances.cnf : SAT 
+     résultats obtenu sur dependances.cnf : SAT *)
+
     

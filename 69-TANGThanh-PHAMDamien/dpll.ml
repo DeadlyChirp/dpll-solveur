@@ -96,15 +96,22 @@ let () = print_modele (solveur_split coloriage []) *)
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
     let pur clauses =
-      let rec aux clauses acc =
+      let rec auxiliaire clauses accumulateur =
         match clauses with
         | [] -> raise (Failure "pas de littéral pur")
-        | cl::cls ->
-          let negs, poss = List.partition (fun l -> l < 0) cl in
-          let negs = List.map abs negs in
-          let new_acc = List.fold_left (fun acc l -> if List.mem l acc || List.mem (-l) acc then acc else l::acc) acc (negs @ poss) in
-          aux cls new_acc
-      in aux clauses []
+        | clause_courante::clauses_restantes ->
+          let negatifs, positifs = List.partition (fun l -> l < 0) clause_courante in
+          let negatifs = List.map abs negatifs in
+          let nouvel_accumulateur = List.fold_left (fun acc l -> if List.mem l acc || List.mem (-l) acc then acc else l::acc) accumulateur (negatifs @ positifs) in
+          auxiliaire clauses_restantes nouvel_accumulateur
+      in auxiliaire clauses []
+    (* La fonction pur cherche un littéral pur dans une liste de clauses, 
+       où une clause est une liste de littéraux représentés par des entiers (positifs ou négatifs). 
+       Pour chaque clause, elle sépare les littéraux positifs et négatifs, convertit les négatifs en positifs, 
+       et les ajoute à un accumulateur sauf s'ils sont déjà présents avec l'opposé. 
+       Si elle atteint la fin de la liste sans trouver de littéral pur, elle lève une exception. 
+       L'accumulateur sert à garder une trace des littéraux déjà vus. 
+       Le but est de trouver un littéral qui apparaît toujours avec le même signe dans toutes les clauses. *)
 
 (* unitaire : int list list -> int
     - si `clauses' contient au moins une clause unitaire, retourne
@@ -119,21 +126,8 @@ let rec unitaire clauses =
 (* solveur_dpll_rec : int list list -> int list -> int list option 
    
  + but est de déterminer s'il existe une affectation des variables 
-   (* booléennes qui rend toutes les clauses vraies.*)
-let rec solveur_dpll_rec clauses interpretation =
-  if clauses = [] then Some interpretation else
-  if mem [] clauses then None else
-    try 
-    let unit_clause = unitaire clauses in solveur_dpll_rec (simplifie unit_clause clauses) (unit_clause::interpretation)
-  with Not_found ->
-    try 
-      let pure_literal = pur clauses in solveur_dpll_rec (simplifie pure_literal clauses) (pure_literal::interpretation) with
-    Failure _->
-        let l = hd (hd clauses) in
-        let branche = solveur_dpll_rec (simplifie l clauses) (l::interpretation) in
-        match branche with
-        | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
-        | _    -> branche *)
+   booléennes qui rend toutes les clauses vraies.*)
+
         let rec solveur_dpll_rec clauses interpretation =
           if clauses = [] then Some interpretation else
           if mem [] clauses then None else
@@ -149,7 +143,14 @@ let rec solveur_dpll_rec clauses interpretation =
                 match branche with
                 | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
                 | _    -> branche
-  
+  (* Explication 
+     
+La fonction solveur_dpll_rec cherche une solution pour rendre toutes les clauses vraies. 
+Si toutes les clauses sont déjà vraies, elle renvoie la solution. 
+Si une clause est fausse, il n'y a pas de solution. 
+Elle simplifie d'abord le problème en utilisant des clauses à un seul littéral. 
+Si cela ne suffit pas, elle utilise des littéraux qui apparaissent toujours avec le même signe. 
+Si elle ne trouve ni l'un ni l'autre, elle teste un littéral au hasard et continue la recherche. *)
   
 
 

@@ -119,7 +119,7 @@ let rec unitaire clauses =
 (* solveur_dpll_rec : int list list -> int list -> int list option 
    
  + but est de déterminer s'il existe une affectation des variables 
-   booléennes qui rend toutes les clauses vraies.*)
+   (* booléennes qui rend toutes les clauses vraies.*)
 let rec solveur_dpll_rec clauses interpretation =
   if clauses = [] then Some interpretation else
   if mem [] clauses then None else
@@ -133,8 +133,22 @@ let rec solveur_dpll_rec clauses interpretation =
         let branche = solveur_dpll_rec (simplifie l clauses) (l::interpretation) in
         match branche with
         | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
-        | _    -> branche
-
+        | _    -> branche *)
+        let rec solveur_dpll_rec clauses interpretation =
+          if clauses = [] then Some interpretation else
+          if mem [] clauses then None else
+            try 
+              let unit_clause = unitaire clauses in solveur_dpll_rec (simplifie unit_clause clauses) (unit_clause::interpretation)
+            with Not_found ->
+              try 
+                let pure_literal = pur clauses in solveur_dpll_rec (simplifie pure_literal clauses) (pure_literal::interpretation)
+              with Failure _ ->
+                let literals = List.flatten clauses in
+                let l = List.fold_left (fun acc l -> if abs l > abs acc then l else acc) 0 literals in
+                let branche = solveur_dpll_rec (simplifie l clauses) (l::interpretation) in
+                match branche with
+                | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
+                | _    -> branche
   
   
 
@@ -148,4 +162,26 @@ let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
   print_modele (solveur_dpll_rec clauses [])
 
-    
+    (*    NOTICE : 
+      Comment compiler et exécuter le programme :
+        on va dans le dossier 69 
+        1. make clean ( on le fait comme ca on s'assure que tout est clean)
+        2. make (on compile)
+        3. ./test_dpll.sh 
+
+        le bash sert a tester tous les 2 dossiers, 
+        fichier par fichier, 
+        il fait pas tous les fichiers en meme temps
+        il te renvoie le nombre de SAT et UNSAT reussi
+        donc A/18 et B/9
+        Il fait automatiquement aussi make et make clean mais bref
+
+        Mais je skip le fichier bf1355-075.cnf 
+        car il est trop long à executer.
+
+
+
+
+     Number of SAT results obtained: 18/18
+      Number of UNSAT results obtained: 8/9 ( skipped bf1355-075.cnf)
+     *)

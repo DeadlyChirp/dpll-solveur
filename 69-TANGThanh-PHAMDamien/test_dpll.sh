@@ -32,8 +32,8 @@ test_file() {
 }
 
 # Test folders
-sat_folder="/home/pain/Documents/dpll-solveur/test-files/dimacs/SAT"
-unsat_folder="/home/pain/Documents/dpll-solveur/test-files/dimacs/UNSAT"
+sat_folder="../test-files/dimacs/SAT"
+unsat_folder="../test-files/dimacs/UNSAT"
 
 # Counters
 sat_counter=0

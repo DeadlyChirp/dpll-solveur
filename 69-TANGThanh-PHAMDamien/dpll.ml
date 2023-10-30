@@ -166,21 +166,20 @@ let () =
     (*    NOTICE : 
       Comment compiler et exécuter le programme :
         on va dans le dossier 69 
-        1. make clean ( on le fait comme ca on s'assure que tout est clean)
+        1. make clean ( afin de s'assurer que tout est propre)
         2. make (on compile)
         3. ./test_dpll.sh 
 
         le bash sert a tester tous les 2 dossiers, 
         fichier par fichier, 
-        il fait pas tous les fichiers en meme temps
-        il te renvoie le nombre de SAT et UNSAT reussi
+        il ne fait pas tous les fichiers en meme temps
+        il renvoie le nombre de SAT et UNSAT reussi
         donc A/18 et B/9
-        Il fait automatiquement aussi make et make clean mais bref
+        Il fait automatiquement aussi make et make clean( mais au cas où ,
+        les faire à la main.)
 
-        Mais je skip le fichier bf1355-075.cnf 
+        Le fichier bf1355-075.cnf est ignoré
         car il est trop long à executer.
-
-
 
 
      Number of SAT results obtained: 18/18

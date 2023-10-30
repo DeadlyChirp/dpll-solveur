@@ -144,7 +144,6 @@ let rec unitaire clauses =
                 | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l)::interpretation)
                 | _    -> branche
   (* Explication 
-     
 La fonction solveur_dpll_rec cherche une solution pour rendre toutes les clauses vraies. 
 Si toutes les clauses sont déjà vraies, elle renvoie la solution. 
 Si une clause est fausse, il n'y a pas de solution. 
@@ -181,8 +180,6 @@ let () =
         car il est trop long à executer.
 
 
-
-
-     Number of SAT results obtained: 18/18
+      Number of SAT results obtained: 18/18
       Number of UNSAT results obtained: 8/9 ( skipped bf1355-075.cnf)
      *)

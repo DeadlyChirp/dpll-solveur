@@ -55,3 +55,6 @@ sous la forme d'une archive XX-nom1-nom2.zip où XX est le numéro de binôme d�
   XX-nom1-nom2/dimacs.ml
   XX-nom1-nom2/Makefile
   XX-nom1-nom2/RENDU
+
+
+bf1355.cnf marche pas
